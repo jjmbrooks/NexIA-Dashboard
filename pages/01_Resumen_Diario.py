@@ -9,7 +9,6 @@ from zoneinfo import ZoneInfo
 from nutriflow_data import load_food_data, parse_date
 from config import METAS_MENSUALES, MACRO_LABELS, MACRO_COLORS, MACRO_UNITS
 
-st.set_page_config(page_title="Resumen Diario", page_icon="📊", layout="wide")
 st.title("📊 Resumen Diario")
 
 # Zona horaria CDMX
