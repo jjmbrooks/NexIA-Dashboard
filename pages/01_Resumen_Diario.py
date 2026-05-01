@@ -4,15 +4,24 @@ Muestra los macros del día actual vs metas
 """
 import streamlit as st
 import pandas as pd
-from datetime import datetime, date
+from datetime import datetime, date, timedelta
+from zoneinfo import ZoneInfo
 from nutriflow_data import load_food_data, parse_date
 from config import METAS_MENSUALES, MACRO_LABELS, MACRO_COLORS, MACRO_UNITS
 
 st.set_page_config(page_title="Resumen Diario", page_icon="📊", layout="wide")
 st.title("📊 Resumen Diario")
 
-mes_actual = datetime.now().strftime("%B")
-mes_esp = {"April": "Abril", "May": "Mayo", "June": "Junio"}.get(mes_actual, mes_actual)
+# Zona horaria CDMX
+CDMX = ZoneInfo("America/Mexico_City")
+ahora = datetime.now(CDMX)
+hoy = ahora.date()
+
+mes_actual = ahora.strftime("%B")
+mes_esp = {"January": "Enero", "February": "Febrero", "March": "Marzo",
+           "April": "Abril", "May": "Mayo", "June": "Junio",
+           "July": "Julio", "August": "Agosto", "September": "Septiembre",
+           "October": "Octubre", "November": "Noviembre", "December": "Diciembre"}.get(mes_actual, mes_actual)
 meta = METAS_MENSUALES.get(mes_esp, METAS_MENSUALES["Abril"])
 
 with st.spinner("Cargando datos de NutriFlow..."):
@@ -26,7 +35,6 @@ df = pd.DataFrame(records)
 df["fecha"] = df["fecha_hora"].apply(parse_date)
 df = df.dropna(subset=["fecha"])
 
-hoy = date.today()
 df_hoy = df[df["fecha"] == hoy]
 
 comidas_hoy = len(df_hoy)
@@ -70,8 +78,7 @@ else:
 # Últimos 7 días
 st.divider()
 st.subheader("Últimos 7 días")
-from datetime import timedelta
-siete_dias = date.today() - timedelta(days=7)
+siete_dias = hoy - timedelta(days=7)
 df_week = df[df["fecha"] >= siete_dias]
 daily = df_week.groupby("fecha").sum(numeric_only=True).reset_index()
 st.dataframe(daily, use_container_width=True, hide_index=True)
