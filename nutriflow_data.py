@@ -8,6 +8,7 @@ from datetime import date
 from typing import Optional
 
 SHEET_ID = "1c9upJ5hqsZsrh2q5jZswfj-ANecV_08xkaIitv2RLoA"
+SHEET_NAME = "Registro de Alimentación"
 
 
 def get_client():
@@ -26,7 +27,9 @@ def get_client():
     try:
         import streamlit as st
         creds_info = st.secrets["google_credentials"]
-    except Exception:
+    except Exception as e:
+        import sys
+        print(f"[get_client] st.secrets falló: {type(e).__name__}: {e}", file=sys.stderr)
         env_creds = os.environ.get("GOOGLE_CREDENTIALS")
         if env_creds:
             creds_info = json.loads(env_creds)
@@ -49,7 +52,7 @@ def get_client():
 def load_food_data() -> list[dict]:
     """Carga y parsea todos los registros de alimentación desde el Sheet en vivo"""
     gc = get_client()
-    sheet = gc.open_by_key(SHEET_ID).sheet1
+    sheet = gc.open_by_key(SHEET_ID).worksheet(SHEET_NAME)
     rows = sheet.get_all_values()
 
     if not rows:
