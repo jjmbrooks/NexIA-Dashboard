@@ -19,7 +19,7 @@ with st.spinner("Cargando datos de NutriFlow..."):
     records = load_food_data()
 
 if not records:
-    st.error("No se pudieron cargar los datos. Verifica las credenciales de Google Sheets.")
+    st.error("No se pudieron cargar los datos. El snapshot de datos no está disponible.")
     st.stop()
 
 df = pd.DataFrame(records)

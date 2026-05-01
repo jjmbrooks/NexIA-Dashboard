@@ -3,5 +3,6 @@ venv/
 __pycache__/
 *.json
 !service_account.json.example
+!data_snapshot.json
 .env
 .streamlit/secrets.toml
