@@ -6,7 +6,6 @@ import streamlit as st
 import pandas as pd
 from nutriflow_data import load_food_data, parse_date
 
-st.set_page_config(page_title="Datos", page_icon="📋", layout="wide")
 st.title("📋 Registros de Alimentación")
 
 with st.spinner("Cargando datos..."):

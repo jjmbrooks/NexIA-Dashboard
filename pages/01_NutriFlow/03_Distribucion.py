@@ -7,7 +7,7 @@ import pandas as pd
 from nutriflow_data import load_food_data, parse_date
 from charts import meal_distribution
 
-st.set_page_config(page_title="Distribución", page_icon="🥧", layout="wide")
+
 st.title("🥧 Distribución por Comida")
 
 with st.spinner("Cargando datos..."):
