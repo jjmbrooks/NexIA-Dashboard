@@ -26,7 +26,7 @@ def get_client():
     try:
         import streamlit as st
         creds_info = st.secrets["google_credentials"]
-    except (ImportError, KeyError):
+    except Exception:
         env_creds = os.environ.get("GOOGLE_CREDENTIALS")
         if env_creds:
             creds_info = json.loads(env_creds)
