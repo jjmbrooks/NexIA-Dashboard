@@ -70,6 +70,8 @@ else:
 # Últimos 7 días
 st.divider()
 st.subheader("Últimos 7 días")
-df_week = df[df["fecha"] >= pd.Timestamp.now() - pd.Timedelta(days=7)]
+from datetime import timedelta
+siete_dias = date.today() - timedelta(days=7)
+df_week = df[df["fecha"] >= siete_dias]
 daily = df_week.groupby("fecha").sum(numeric_only=True).reset_index()
 st.dataframe(daily, use_container_width=True, hide_index=True)
