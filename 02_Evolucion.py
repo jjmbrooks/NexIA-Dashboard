@@ -8,6 +8,7 @@ from nutriflow_data import load_food_data, parse_date
 from config import METAS_MENSUALES, MACRO_COLORS
 from charts import line_chart
 
+st.set_page_config(page_title="Evolución", page_icon="📈", layout="wide")
 st.title("📈 Evolución Temporal")
 
 with st.spinner("Cargando datos..."):
