@@ -1,7 +1,6 @@
 """
 Página: Resumen del Día
-Muestra los macros del día actual vs metas
-Diseño compacto 2 columnas, optimizado para móvil
+Diseño completo en 2 columnas — todo en una pantalla de celular
 """
 import streamlit as st
 import pandas as pd
@@ -12,7 +11,6 @@ from config import METAS_MENSUALES
 
 st.set_page_config(page_title="Resumen Diario", page_icon="📊", layout="wide")
 
-# Zona horaria CDMX
 CDMX = ZoneInfo("America/Mexico_City")
 ahora = datetime.now(CDMX)
 hoy = ahora.date()
@@ -36,7 +34,6 @@ df["fecha"] = df["fecha_hora"].apply(parse_date)
 df = df.dropna(subset=["fecha"])
 
 df_hoy = df[df["fecha"] == hoy]
-
 comidas_hoy = len(df_hoy)
 sum_hoy = df_hoy.sum(numeric_only=True)
 cal = sum_hoy.get('calorias', 0)
@@ -45,162 +42,169 @@ car = sum_hoy.get('carbos', 0)
 gra = sum_hoy.get('grasas', 0)
 fib = sum_hoy.get('fibra', 0)
 
-# CSS compacto para móvil
-st.markdown("""
-<style>
-    /* Compactar todo */
-    .block-container { padding-top: 1rem !important; padding-bottom: 0.5rem !important; }
-    .element-container { margin-bottom: 0 !important; }
-    div[data-testid="column"] > div { padding: 0 2px !important; }
-
-    /* Tarjetas métricas compactas */
-    .kpi-card {
-        background: #1a1a2e;
-        border-radius: 10px;
-        padding: 6px 10px;
-        margin-bottom: 6px;
-        text-align: center;
-        border: 1px solid #2a2a4a;
-    }
-    .kpi-card .emoji { font-size: 1.1rem; }
-    .kpi-card .label { font-size: 0.65rem; color: #888; margin: 0; line-height: 1.2; }
-    .kpi-card .value { font-size: 1.15rem; font-weight: 700; margin: 0; line-height: 1.3; }
-    .kpi-card .delta { font-size: 0.6rem; margin: 0; line-height: 1.1; }
-    .kpi-card .delta.pos { color: #4ade80; }
-    .kpi-card .delta.neg { color: #f87171; }
-    .kpi-card .delta.ok { color: #888; }
-
-    /* Título comprimido */
-    h1 { font-size: 1.2rem !important; margin-bottom: 6px !important; padding-bottom: 0 !important; }
-
-    /* Info de comidas */
-    .meal-row {
-        display: flex;
-        justify-content: space-between;
-        background: #16213e;
-        border-radius: 8px;
-        padding: 5px 10px;
-        margin-bottom: 4px;
-        font-size: 0.7rem;
-    }
-    .meal-row .meal-name { font-weight: 600; color: #ddd; }
-    .meal-row .meal-cal { color: #facc15; }
-    .meal-row .meal-p { color: #60a5fa; }
-    .meal-row .meal-c { color: #fb923c; }
-    .meal-row .meal-f { color: #f472b6; }
-    .meal-row .meal-desc { font-size: 0.6rem; color: #888; }
-
-    .section-title { font-size: 0.75rem; font-weight: 600; color: #aaa; margin: 8px 0 4px 0 !important; padding: 0 !important; text-transform: uppercase; letter-spacing: 0.5px; }
-
-    /* Ocultar divider */
-    hr { margin: 6px 0 !important; }
-</style>
-""", unsafe_allow_html=True)
-
-# === TÍTULO COMPACTO ===
-st.markdown(f"<h1>📊 {hoy.strftime('%d %b %Y')}</h1>", unsafe_allow_html=True)
-
-# === FILA 1: CALORÍAS + PROTEÍNA ===
-c1, c2 = st.columns(2)
-with c1:
-    delta_cal = cal - meta['calorias']
-    cls = "pos" if delta_cal >= 0 else "neg"
-    st.markdown(f"""
-    <div class="kpi-card">
-        <div class="emoji">🔥</div>
-        <div class="label">Calorías</div>
-        <div class="value">{cal:.0f} <span style="font-size:0.7rem;color:#888">/ {meta['calorias']:.0f}</span></div>
-        <div class="delta {cls}">{'+' if delta_cal >= 0 else ''}{delta_cal:.0f} vs meta</div>
-    </div>
-    """, unsafe_allow_html=True)
-
-with c2:
-    delta_pro = pro - meta['proteina']
-    cls = "pos" if delta_pro >= 0 else "neg"
-    st.markdown(f"""
-    <div class="kpi-card">
-        <div class="emoji">💪</div>
-        <div class="label">Proteína</div>
-        <div class="value">{pro:.0f} <span style="font-size:0.7rem;color:#888">/ {meta['proteina']:.0f}g</span></div>
-        <div class="delta {cls}">{'+' if delta_pro >= 0 else ''}{delta_pro:.0f}g vs meta</div>
-    </div>
-    """, unsafe_allow_html=True)
-
-# === FILA 2: CARBOHIDRATOS + GRASAS ===
-c1, c2 = st.columns(2)
-with c1:
-    delta_car = car - meta['carbos']
-    cls = "pos" if delta_car >= 0 else "neg"
-    st.markdown(f"""
-    <div class="kpi-card">
-        <div class="emoji">🌾</div>
-        <div class="label">Carbohidratos</div>
-        <div class="value">{car:.0f} <span style="font-size:0.7rem;color:#888">/ {meta['carbos']:.0f}g</span></div>
-        <div class="delta {cls}">{'+' if delta_car >= 0 else ''}{delta_car:.0f}g vs meta</div>
-    </div>
-    """, unsafe_allow_html=True)
-
-with c2:
-    delta_gra = gra - meta['grasas']
-    cls = "pos" if delta_gra >= 0 else "neg"
-    st.markdown(f"""
-    <div class="kpi-card">
-        <div class="emoji">🧈</div>
-        <div class="label">Grasas</div>
-        <div class="value">{gra:.0f} <span style="font-size:0.7rem;color:#888">/ {meta['grasas']:.0f}g</span></div>
-        <div class="delta {cls}">{'+' if delta_gra >= 0 else ''}{delta_gra:.0f}g vs meta</div>
-    </div>
-    """, unsafe_allow_html=True)
-
-# === FILA 3: FIBRA (sola, centrada) ===
-c1, c2, c3 = st.columns([1, 2, 1])
-with c2:
-    delta_fib = fib - meta['fibra']
-    cls = "pos" if delta_fib >= 0 else "neg"
-    st.markdown(f"""
-    <div class="kpi-card">
-        <div class="emoji">🧵</div>
-        <div class="label">Fibra</div>
-        <div class="value">{fib:.0f} <span style="font-size:0.7rem;color:#888">/ {meta['fibra']:.0f}g</span></div>
-        <div class="delta {cls}">{'+' if delta_fib >= 0 else ''}{delta_fib:.0f}g vs meta</div>
-    </div>
-    """, unsafe_allow_html=True)
-
-# === COMIDAS DEL DÍA ===
-if comidas_hoy > 0:
-    st.markdown(f'<div class="section-title">🥘 Comidas ({comidas_hoy})</div>', unsafe_allow_html=True)
-    for _, row in df_hoy.iterrows():
-        nombre = row['comida']
-        desc = row.get('descripcion', '')
-        rcal = row.get('calorias', 0)
-        rpro = row.get('proteina', 0)
-        rcar = row.get('carbos', 0)
-        rgra = row.get('grasas', 0)
-        st.markdown(f"""
-        <div class="meal-row">
-            <div>
-                <div class="meal-name">{nombre}</div>
-                <div class="meal-desc">{desc[:50]}{'...' if len(desc) > 50 else ''}</div>
-            </div>
-            <div style="text-align:right">
-                <span class="meal-cal">🔥{rcal:.0f}</span>
-                <span class="meal-p"> 💪{rpro:.0f}</span>
-                <span class="meal-c"> 🌾{rcar:.0f}</span>
-                <span class="meal-f"> 🧈{rgra:.0f}</span>
-            </div>
-        </div>
-        """, unsafe_allow_html=True)
-else:
-    st.info("🥗 Aún sin registros hoy")
-
-# === ÚLTIMOS 7 DÍAS (compacto) ===
-st.markdown('<div class="section-title">📅 Últimos 7 días</div>', unsafe_allow_html=True)
+# Tabla 7 días
 siete_dias = hoy - timedelta(days=7)
 df_week = df[df["fecha"] >= siete_dias]
 daily = df_week.groupby("fecha").sum(numeric_only=True).reset_index()
-daily["fecha"] = daily["fecha"].apply(lambda d: d.strftime("%d/%m"))
-daily = daily.rename(columns={
-    "fecha": "Día", "calorias": "🔥Cal", "proteina": "💪Prot",
-    "carbos": "🌾Carb", "grasas": "🧈Gras", "fibra": "🧵Fib"
+daily["fecha_str"] = daily["fecha"].apply(lambda d: d.strftime("%d/%m"))
+
+# ─── CSS COMPACTO ────────────────────────────────────────────────
+st.markdown("""
+<style>
+    /* Compact root */
+    .block-container { padding: 0.6rem 0.8rem 0.3rem !important; max-width: 480px !important; }
+    .element-container, .stMarkdown { margin-bottom: 0 !important; }
+    .stApp header { display: none !important; }
+
+    /* Global small font */
+    * { font-size: 0.78rem !important; }
+
+    /* Title bar */
+    .title-row {
+        display: flex; justify-content: space-between; align-items: center;
+        margin-bottom: 6px;
+    }
+    .title-row .date { font-size: 0.85rem !important; font-weight: 700; color: #eee; }
+    .title-row .meals { font-size: 0.7rem !important; color: #888; }
+
+    /* KPI badge (ultra compact) */
+    .kpi {
+        background: #1a1a2e; border-radius: 8px; padding: 5px 6px;
+        text-align: center; border: 1px solid #2a2a4a; margin-bottom: 5px;
+    }
+    .kpi .v { font-size: 1rem !important; font-weight: 700; line-height: 1.2; }
+    .kpi .l { font-size: 0.55rem !important; color: #888; line-height: 1; }
+    .kpi .d { font-size: 0.5rem !important; line-height: 1; }
+    .kpi .d.pos { color: #4ade80; }
+    .kpi .d.neg { color: #f87171; }
+
+    /* Meal card */
+    .meal {
+        background: #16213e; border-radius: 6px; padding: 3px 6px;
+        margin-bottom: 3px; display: flex; justify-content: space-between; align-items: center;
+    }
+    .meal .n { font-weight: 600; font-size: 0.65rem !important; color: #ddd; }
+    .meal .dsc { font-size: 0.5rem !important; color: #666; }
+    .meal .mac { font-size: 0.6rem !important; text-align: right; white-space: nowrap; }
+
+    /* 7-day table wrapper */
+    .week-table table {
+        font-size: 0.6rem !important;
+    }
+    .week-table td, .week-table th {
+        padding: 2px 4px !important;
+        font-size: 0.6rem !important;
+    }
+
+    /* Status row */
+    .status-line {
+        font-size: 0.6rem !important; color: #888; text-align: center;
+        margin: 4px 0;
+    }
+
+    hr { margin: 4px 0 !important; }
+    h1, h2, h3 { display: none !important; }
+    .stAlert { margin-bottom: 4px !important; font-size: 0.7rem !important; }
+</style>
+""", unsafe_allow_html=True)
+
+# ─── TÍTULO ──────────────────────────────────────────────────────
+st.markdown(f"""
+<div class="title-row">
+    <span class="date">📊 {hoy.strftime('%d %b')}</span>
+    <span class="meals">{comidas_hoy} comida{"s" if comidas_hoy != 1 else ""}</span>
+</div>
+""", unsafe_allow_html=True)
+
+# ─── GRILLA 2 COLUMNAS PRINCIPAL ─────────────────────────────────
+c_left, c_right = st.columns(2, gap="small")
+
+with c_left:
+    # Fila 1: Calorías
+    delta_cal = cal - meta['calorias']
+    cls = "pos" if delta_cal >= 0 else "neg"
+    st.markdown(f"""
+    <div class="kpi">
+        <div class="l">🔥 Calorías</div>
+        <div class="v">{cal:.0f}</div>
+        <div class="d {cls}">{'+' if delta_cal >= 0 else ''}{delta_cal:.0f} / {meta['calorias']:.0f}</div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    # Comidas del día
+    if comidas_hoy > 0:
+        st.markdown('<div class="status-line">🥘 Comidas</div>', unsafe_allow_html=True)
+        for _, row in df_hoy.iterrows():
+            rcal = row.get('calorias', 0)
+            rpro = row.get('proteina', 0)
+            rcar = row.get('carbos', 0)
+            rgra = row.get('grasas', 0)
+            desc = row.get('descripcion', '')
+            st.markdown(f"""
+            <div class="meal">
+                <div>
+                    <div class="n">{row['comida']}</div>
+                    <div class="dsc">{desc[:35]}{'…' if len(desc) > 35 else ''}</div>
+                </div>
+                <div class="mac">🔥{rcal:.0f} 💪{rpro:.0f} 🌾{rcar:.0f} 🧈{rgra:.0f}</div>
+            </div>
+            """, unsafe_allow_html=True)
+    else:
+        st.info("🥗 Sin registros hoy")
+
+with c_right:
+    # Proteína
+    delta_pro = pro - meta['proteina']
+    cls = "pos" if delta_pro >= 0 else "neg"
+    st.markdown(f"""
+    <div class="kpi">
+        <div class="l">💪 Proteína</div>
+        <div class="v">{pro:.0f}g</div>
+        <div class="d {cls}">{'+' if delta_pro >= 0 else ''}{delta_pro:.0f} / {meta['proteina']:.0f}</div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    # Carbohidratos
+    delta_car = car - meta['carbos']
+    cls = "pos" if delta_car >= 0 else "neg"
+    st.markdown(f"""
+    <div class="kpi">
+        <div class="l">🌾 Carbohidratos</div>
+        <div class="v">{car:.0f}g</div>
+        <div class="d {cls}">{'+' if delta_car >= 0 else ''}{delta_car:.0f} / {meta['carbos']:.0f}</div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    # Grasas
+    delta_gra = gra - meta['grasas']
+    cls = "pos" if delta_gra >= 0 else "neg"
+    st.markdown(f"""
+    <div class="kpi">
+        <div class="l">🧈 Grasas</div>
+        <div class="v">{gra:.0f}g</div>
+        <div class="d {cls}">{'+' if delta_gra >= 0 else ''}{delta_gra:.0f} / {meta['grasas']:.0f}</div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    # Fibra
+    delta_fib = fib - meta['fibra']
+    cls = "pos" if delta_fib >= 0 else "neg"
+    st.markdown(f"""
+    <div class="kpi">
+        <div class="l">🧵 Fibra</div>
+        <div class="v">{fib:.0f}g</div>
+        <div class="d {cls}">{'+' if delta_fib >= 0 else ''}{delta_fib:.0f} / {meta['fibra']:.0f}</div>
+    </div>
+    """, unsafe_allow_html=True)
+
+# ─── ÚLTIMOS 7 DÍAS (ancho completo debajo de las columnas) ─────
+st.markdown("<hr>", unsafe_allow_html=True)
+st.markdown('<div class="status-line">📅 Últimos 7 días</div>', unsafe_allow_html=True)
+
+daily_display = daily.rename(columns={
+    "fecha_str": "D", "calorias": "🔥", "proteina": "💪",
+    "carbos": "🌾", "grasas": "🧈", "fibra": "🧵"
 })
-st.dataframe(daily, use_container_width=True, hide_index=True, height=180)
+cols_order = [c for c in ["D", "🔥", "💪", "🌾", "🧈", "🧵"] if c in daily_display.columns]
+daily_display = daily_display[cols_order]
+st.dataframe(daily_display, use_container_width=True, hide_index=True, height=120)
