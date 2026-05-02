@@ -86,14 +86,14 @@ st.markdown("""
 
     /* Tarjeta KPI */
     .kpi {
-        background: #1a1a2e; border-radius: 14px; padding: 10px 6px;
+        background: #1a1a2e; border-radius: 16px; padding: 14px 8px;
         text-align: center; border: 1px solid #2a2a4a;
     }
-    .kpi .emoji { font-size: 1.4rem; line-height: 1; }
-    .kpi .label { font-size: 0.65rem; color: #888; margin-top: 1px; }
-    .kpi .valor { font-size: 1.6rem; font-weight: 800; line-height: 1.1; margin: 1px 0; }
-    .kpi .valor span { font-size: 0.75rem; font-weight: 400; color: #666; }
-    .kpi .delta { font-size: 0.6rem; line-height: 1; }
+    .kpi .emoji { font-size: 1.7rem; line-height: 1; }
+    .kpi .label { font-size: 0.75rem; color: #888; margin-top: 2px; }
+    .kpi .valor { font-size: 1.9rem; font-weight: 800; line-height: 1.1; margin: 2px 0; }
+    .kpi .valor span { font-size: 0.85rem; font-weight: 400; color: #666; }
+    .kpi .delta { font-size: 0.7rem; line-height: 1; }
     .kpi .delta.pos { color: #4ade80; }
     .kpi .delta.neg { color: #f87171; }
 
