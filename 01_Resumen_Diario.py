@@ -61,8 +61,11 @@ st.markdown("""
     /* Ocultar los contenedores vacíos de st.columns y el markup automático */
     div[data-testid="column"] { display: none !important; }
 
+    /* Título arriba */
+    .page-titulo { font-size: 1.1rem; font-weight: 700; color: #e0e0ff; text-align: center; margin-bottom: 2px; }
+
     /* Fecha arriba */
-    .fecha { font-size: 0.8rem; color: #aaa; text-align: center; margin-bottom: 6px; }
+    .fecha { font-size: 0.75rem; color: #888; text-align: center; margin-bottom: 8px; }
     .fecha span { color: #facc15; font-weight: 700; }
 
     /* ─── GRID DE KPIs: 2 columnas forzadas ─── */
@@ -98,19 +101,19 @@ st.markdown("""
     .kpi .delta.neg { color: #f87171; }
 
     /* Comidas */
-    .seccion-tit { font-size: 0.75rem; font-weight: 600; color: #aaa; margin: 10px 0 4px 0; letter-spacing: 0.3px; }
+    .seccion-tit { font-size: 0.85rem; font-weight: 600; color: #aaa; margin: 12px 0 6px 0; letter-spacing: 0.3px; }
     .comida {
-        background: #16213e; border-radius: 8px; padding: 5px 8px;
-        margin-bottom: 4px; display: flex; justify-content: space-between; align-items: center;
+        background: #16213e; border-radius: 10px; padding: 8px 10px;
+        margin-bottom: 5px; display: flex; justify-content: space-between; align-items: center;
     }
-    .comida .nom { font-weight: 600; font-size: 0.72rem; color: #ddd; }
-    .comida .dsc { font-size: 0.55rem; color: #666; }
-    .comida .mac { font-size: 0.6rem; text-align: right; white-space: nowrap; color: #bbb; }
+    .comida .nom { font-weight: 600; font-size: 0.85rem; color: #ddd; }
+    .comida .dsc { font-size: 0.7rem; color: #666; }
+    .comida .mac { font-size: 0.7rem; text-align: right; white-space: nowrap; color: #bbb; }
 
     /* Tabla semanal */
-    .semana-tabla { font-size: 0.65rem; width: 100%; border-collapse: collapse; margin-top: 4px; }
-    .semana-tabla th { color: #888; font-weight: 600; padding: 3px 4px; text-align: center; border-bottom: 1px solid #2a2a4a; font-size: 0.6rem; }
-    .semana-tabla td { padding: 3px 4px; text-align: center; border-bottom: 1px solid #1e1e3a; font-size: 0.6rem; }
+    .semana-tabla { font-size: 0.75rem; width: 100%; border-collapse: collapse; margin-top: 6px; }
+    .semana-tabla th { color: #888; font-weight: 600; padding: 5px 6px; text-align: center; border-bottom: 1px solid #2a2a4a; font-size: 0.7rem; }
+    .semana-tabla td { padding: 5px 6px; text-align: center; border-bottom: 1px solid #1e1e3a; font-size: 0.7rem; }
     .semana-tabla tr:hover { background: #1e1e3a; }
     .semana-tabla .hoy { color: #facc15; font-weight: 700; }
 
@@ -124,6 +127,7 @@ st.markdown("""
 # ==================================================================
 # SECCIÓN 1: MACROS (2 columnas forzadas con CSS Grid)
 # ==================================================================
+st.markdown('<div class="page-titulo">🥗 Resumen Diario</div>', unsafe_allow_html=True)
 st.markdown(f'<div class="fecha">📊 <span>{hoy.strftime("%d %B %Y")}</span></div>', unsafe_allow_html=True)
 
 # Construir cada tarjeta KPI
