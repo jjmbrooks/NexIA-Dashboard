@@ -1,6 +1,6 @@
 """
 Página: Resumen del Día
-Arriba: 5 KPIs en 2 columnas (pantalla completa)
+Arriba: 5 KPIs en 2 columnas usando CSS Grid (forzado)
 Abajo: comidas del día + resumen semanal con días lun-dom
 """
 import streamlit as st
@@ -9,8 +9,6 @@ from datetime import datetime, date, timedelta
 from zoneinfo import ZoneInfo
 from nutriflow_data import load_food_data, parse_date
 from config import METAS_MENSUALES
-
-st.set_page_config(page_title="Resumen Diario", page_icon="📊", layout="wide")
 
 CDMX = ZoneInfo("America/Mexico_City")
 ahora = datetime.now(CDMX)
@@ -57,17 +55,39 @@ daily = daily.sort_values("fecha")
 # ─── CSS ─────────────────────────────────────────────────────────
 st.markdown("""
 <style>
-    .block-container { padding: 0.6rem 0.8rem 0.3rem !important; max-width: 480px !important; }
+    .block-container { padding: 0.6rem 0.8rem 0.3rem !important; max-width: 500px !important; }
     .element-container { margin-bottom: 0 !important; }
 
+    /* Ocultar los contenedores vacíos de st.columns y el markup automático */
+    div[data-testid="column"] { display: none !important; }
+
     /* Fecha arriba */
-    .fecha { font-size: 0.8rem; color: #aaa; text-align: center; margin-bottom: 5px; }
+    .fecha { font-size: 0.8rem; color: #aaa; text-align: center; margin-bottom: 6px; }
     .fecha span { color: #facc15; font-weight: 700; }
+
+    /* ─── GRID DE KPIs: 2 columnas forzadas ─── */
+    .kpi-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 6px;
+        margin-bottom: 8px;
+    }
+    .kpi-grid .full-width {
+        grid-column: 1 / -1;
+    }
+    .kpi-grid .center-col {
+        grid-column: 1 / -1;
+        display: flex;
+        justify-content: center;
+    }
+    .kpi-grid .center-col .kpi {
+        width: 50%;
+    }
 
     /* Tarjeta KPI */
     .kpi {
         background: #1a1a2e; border-radius: 14px; padding: 10px 6px;
-        text-align: center; border: 1px solid #2a2a4a; margin-bottom: 7px;
+        text-align: center; border: 1px solid #2a2a4a;
     }
     .kpi .emoji { font-size: 1.4rem; line-height: 1; }
     .kpi .label { font-size: 0.65rem; color: #888; margin-top: 1px; }
@@ -97,42 +117,31 @@ st.markdown("""
     hr { margin: 4px 0 !important; border-color: #2a2a4a; }
     h1, h2, h3 { display: none !important; }
     .stAlert { margin-bottom: 4px !important; font-size: 0.7rem !important; }
+    .stSpinner { font-size: 0.7rem !important; }
 </style>
 """, unsafe_allow_html=True)
 
 # ==================================================================
-# SECCIÓN 1: MACROS (ocupa la pantalla sin scroll)
+# SECCIÓN 1: MACROS (2 columnas forzadas con CSS Grid)
 # ==================================================================
 st.markdown(f'<div class="fecha">📊 <span>{hoy.strftime("%d %B %Y")}</span></div>', unsafe_allow_html=True)
 
-# Fila 1: Calorías | Proteína
-c1, c2 = st.columns(2, gap="small")
-with c1:
-    d = cal - meta['calorias']
+# Construir cada tarjeta KPI
+def kpi_card(emoji, label, valor, meta_val, unit=""):
+    d = valor - meta_val
     cls = "pos" if d >= 0 else "neg"
-    st.markdown(f'<div class="kpi"><div class="emoji">🔥</div><div class="label">Calorías</div><div class="valor">{cal:.0f}<span> / {meta["calorias"]:.0f}</span></div><div class="delta {cls}">{"+" if d >= 0 else ""}{d:.0f}</div></div>', unsafe_allow_html=True)
-with c2:
-    d = pro - meta['proteina']
-    cls = "pos" if d >= 0 else "neg"
-    st.markdown(f'<div class="kpi"><div class="emoji">💪</div><div class="label">Proteína</div><div class="valor">{pro:.0f}<span>g / {meta["proteina"]:.0f}</span></div><div class="delta {cls}">{"+" if d >= 0 else ""}{d:.0f}g</div></div>', unsafe_allow_html=True)
+    sign = "+" if d >= 0 else ""
+    return f'<div class="kpi"><div class="emoji">{emoji}</div><div class="label">{label}</div><div class="valor">{valor:.0f}<span>{unit} / {meta_val:.0f}</span></div><div class="delta {cls}">{sign}{d:.0f}{unit}</div></div>'
 
-# Fila 2: Carbohidratos | Grasas
-c1, c2 = st.columns(2, gap="small")
-with c1:
-    d = car - meta['carbos']
-    cls = "pos" if d >= 0 else "neg"
-    st.markdown(f'<div class="kpi"><div class="emoji">🌾</div><div class="label">Carbohidratos</div><div class="valor">{car:.0f}<span>g / {meta["carbos"]:.0f}</span></div><div class="delta {cls}">{"+" if d >= 0 else ""}{d:.0f}g</div></div>', unsafe_allow_html=True)
-with c2:
-    d = gra - meta['grasas']
-    cls = "pos" if d >= 0 else "neg"
-    st.markdown(f'<div class="kpi"><div class="emoji">🧈</div><div class="label">Grasas</div><div class="valor">{gra:.0f}<span>g / {meta["grasas"]:.0f}</span></div><div class="delta {cls}">{"+" if d >= 0 else ""}{d:.0f}g</div></div>', unsafe_allow_html=True)
+grid_html = f"""<div class="kpi-grid">
+    {kpi_card("🔥", "Calorías", cal, meta["calorias"])}
+    {kpi_card("💪", "Proteína", pro, meta["proteina"], "g")}
+    {kpi_card("🌾", "Carbohidratos", car, meta["carbos"], "g")}
+    {kpi_card("🧈", "Grasas", gra, meta["grasas"], "g")}
+    <div class="center-col">{kpi_card("🧵", "Fibra", fib, meta["fibra"], "g")}</div>
+</div>"""
 
-# Fila 3: Fibra (centrada)
-c1, c2, c3 = st.columns([1, 2, 1])
-with c2:
-    d = fib - meta['fibra']
-    cls = "pos" if d >= 0 else "neg"
-    st.markdown(f'<div class="kpi"><div class="emoji">🧵</div><div class="label">Fibra</div><div class="valor">{fib:.0f}<span>g / {meta["fibra"]:.0f}</span></div><div class="delta {cls}">{"+" if d >= 0 else ""}{d:.0f}g</div></div>', unsafe_allow_html=True)
+st.markdown(grid_html, unsafe_allow_html=True)
 
 # ==================================================================
 # SECCIÓN 2: COMIDAS DEL DÍA (con scroll debajo)
