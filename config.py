@@ -9,29 +9,28 @@ SHEET_IDS = {
     "habitos": "1VF2N9uV0lMGI73GiHU-QO65YWEMZBcSwB_fUXE08bLA",
 }
 
-SHEET_ID = SHEET_IDS["nutriflow"]  # Default para compatibilidad
+SHEET_ID = SHEET_IDS["nutriflow"]
 
 # Nombres de hojas por proyecto
 SHEET_NAMES = {
     "nutriflow": "Registro de Alimentación",
     "bodylab": "Bitácora",
     "habitos": "Registros",
+    "metas": "Metas",
+    "peso": "Registro de Peso",
+    "datos_generales": "Datos Generales",
 }
 
-# Metas mensuales (calorías, proteína, grasa, carbos, fibra)
-METAS_MENSUALES = {
+# Metas por defecto (fallback si no se puede leer del sheet)
+METAS_FALLBACK = {
+    "Enero":   {"calorias": 2000, "proteina": 90, "grasas": 54.7, "carbos": 287, "fibra": 25},
     "Febrero": {"calorias": 2000, "proteina": 90, "grasas": 54.7, "carbos": 287, "fibra": 25},
     "Marzo":   {"calorias": 2000, "proteina": 90, "grasas": 54.7, "carbos": 287, "fibra": 25},
     "Abril":   {"calorias": 1800, "proteina": 90, "grasas": 48.0, "carbos": 252, "fibra": 25},
-    "Mayo":    {"calorias": 1700, "proteina": 90, "grasas": 44.7, "carbos": 234.5, "fibra": 25},
-    "Junio":   {"calorias": 1600, "proteina": 90, "grasas": 41.3, "carbos": 217, "fibra": 25},
-    "Julio":   {"calorias": 1500, "proteina": 90, "grasas": 38.0, "carbos": 199.5, "fibra": 25},
-    "Agosto":  {"calorias": 1400, "proteina": 90, "grasas": 34.7, "carbos": 182, "fibra": 25},
-    "Septiembre": {"calorias": 1300, "proteina": 90, "grasas": 31.3, "carbos": 164.5, "fibra": 25},
-    "Octubre": {"calorias": 1300, "proteina": 90, "grasas": 31.3, "carbos": 164.5, "fibra": 25},
+    "Mayo":    {"calorias": 1800, "proteina": 90, "grasas": 48,   "carbos": 252, "fibra": 25},
+    "Junio":   {"calorias": 1800, "proteina": 90, "grasas": 48,   "carbos": 252, "fibra": 25},
 }
 
-# Mapeo de nombres de macros
 MACRO_LABELS = {
     "calorias": "Calorías",
     "proteina": "Proteína",
@@ -42,10 +41,10 @@ MACRO_LABELS = {
 
 MACRO_COLORS = {
     "calorias": "#FF6B35",
-    "proteina": "#1E88E5",
-    "carbos": "#43A047",
-    "grasas": "#FDD835",
-    "fibra": "#8E24AA",
+    "proteina": "#818cf8",
+    "carbos": "#22c55e",
+    "grasas": "#facc15",
+    "fibra": "#c084fc",
 }
 
 MACRO_UNITS = {
@@ -54,4 +53,12 @@ MACRO_UNITS = {
     "carbos": "g",
     "grasas": "g",
     "fibra": "g",
+}
+
+MACRO_EMOJIS = {
+    "calorias": "🔥",
+    "proteina": "💪",
+    "carbos": "🌾",
+    "grasas": "🧈",
+    "fibra": "🧵",
 }

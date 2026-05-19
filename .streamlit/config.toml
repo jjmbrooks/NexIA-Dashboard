@@ -1,16 +1,23 @@
 [theme]
 base = "dark"
 primaryColor = "#6366f1"
-backgroundColor = "#0f0f1a"
-secondaryBackgroundColor = "#1a1c2e"
+backgroundColor = "#0a0a14"
+secondaryBackgroundColor = "#12122a"
 textColor = "#e0e0ff"
 font = "sans serif"
 
 [theme.dark]
 textColor = "#e0e0ff"
-backgroundColor = "#0f0f1a"
-secondaryBackgroundColor = "#1a1c2e"
+backgroundColor = "#0a0a14"
+secondaryBackgroundColor = "#12122a"
 primaryColor = "#6366f1"
 
 [theme.dark.sidebar]
-backgroundColor = "#12122a"
+backgroundColor = "#0f0f1e"
+
+[server]
+maxUploadSize = 10
+enableCORS = true
+
+[browser]
+gatherUsageStats = false
